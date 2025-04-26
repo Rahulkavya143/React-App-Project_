@@ -4,6 +4,55 @@ pipeline {
   environment {
     DEV_IMAGE = 'rahulr143/dev:latest'
     PROD_IMAGE = 'rahulr143/prod:latest'
+<<<<<<< HEAD
+=======
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+        script {
+          env.BRANCH_NAME = env.GIT_BRANCH.replaceAll('origin/', '')
+          echo "Current branch: ${env.BRANCH_NAME}"
+        }
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        script {
+          sh 'chmod +x build.sh'
+          sh "./build.sh ${env.BRANCH_NAME}"
+        }
+      }
+    }
+
+    stage('Push to Docker Hub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          script {
+            sh """
+              echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            """
+
+            if (env.BRANCH_NAME == "dev") {
+              sh "docker push $DEV_IMAGE"
+            } else if (env.BRANCH_NAME == "main") {
+              sh "docker push $PROD_IMAGE"
+            } else {
+              echo "Not a dev or main branch. Skipping push."
+            }
+          }
+        }
+      }
+pipeline {
+  agent any
+
+  environment {
+    DEV_IMAGE = 'rahulr143/dev:latest'
+    PROD_IMAGE = 'rahulr143/prod:latest'
+>>>>>>> 88f5aac (Added Jenkinsfile, build and deploy scripts)
   }
 
   stages {
@@ -62,4 +111,108 @@ pipeline {
     }
   }
 }
+pipeline {
+  agent any
 
+  environment {
+    DEV_IMAGE = 'rahulr143/dev:latest'
+    PROD_IMAGE = 'rahulr143/prod:latest'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+        script {
+          env.BRANCH_NAME = env.GIT_BRANCH.replaceAll('origin/', '')
+          echo "Current branch: ${env.BRANCH_NAME}"
+        }
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        script {
+          sh 'chmod +x build.sh'
+          sh "./build.sh ${env.BRANCH_NAME}"
+        }
+      }
+    }
+
+    stage('Push to Docker Hub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          script {
+            sh """
+              echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            """
+
+            if (env.BRANCH_NAME == "dev") {
+              sh "docker push $DEV_IMAGE"
+            } else if (env.BRANCH_NAME == "main") {
+              sh "docker push $PROD_IMAGE"
+            } else {
+              echo "Not a dev or main branch. Skipping push."
+            }
+          }
+        }
+      }
+
+pipeline {
+    agent any
+
+    environment {
+        DEV_IMAGE = 'rahulr143/dev:latest'
+        PROD_IMAGE = 'rahulr143/prod:latest'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                script {
+                    env.BRANCH_NAME = env.GIT_BRANCH.replace('origin/', '')
+                    echo "Current branch: ${env.BRANCH_NAME}"
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'chmod +x build.sh'
+                    sh "./build.sh ${env.BRANCH_NAME}"
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        sh """
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        """
+
+                        if (env.BRANCH_NAME == "dev") {
+                            sh "docker push $DEV_IMAGE"
+                        } else if (env.BRANCH_NAME == "main") {
+                            sh "docker push $PROD_IMAGE"
+                        } else {
+                            echo "Branch not dev or main. Skipping Docker push."
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Server') {
+            steps {
+                script {
+                    sh 'chmod +x deploy.sh'
+                    sh "./deploy.sh ${env.BRANCH_NAME}"
+                }
+            }
+        }
+    }
+}
