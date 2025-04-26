@@ -1,6 +1,6 @@
 REPOSITORY               TAG       IMAGE ID       CREATED        SIZE
 prom/prometheus          latest    7f8d8693d556   23 hours ago   302MB
-rahul2401/dev         latest    b8f547ff1dbc   6 days ago     142MB
-rahul2401/prod        latest    b8f547ff1dbc   6 days ago     142MB
+rahulr143/dev         latest    b8f547ff1dbc   6 days ago     142MB
+rahulr143/prod        latest    b8f547ff1dbc   6 days ago     142MB
 prom/alertmanager        latest    91c01b3cec9b   5 weeks ago    72.3MB
 prom/blackbox-exporter   latest    694775639bf5   7 weeks ago    26.5MB
