@@ -8,10 +8,10 @@ echo "Received branch name: $BRANCH_NAME"
 
 # Set image and container name based on branch
 if [ "$BRANCH_NAME" == "main" ]; then
-    IMAGE="rahul2401/prod:latest"
+    IMAGE="rahulr143/prod:latest"
     CONTAINER_NAME="app-prod"
 else
-    IMAGE="rahul2401/dev:latest"
+    IMAGE="rahulr143/dev:latest"
     CONTAINER_NAME="app-dev"
 fi
 
