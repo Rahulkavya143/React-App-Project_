@@ -2,8 +2,8 @@ pipeline {
   agent any
 
   environment {
-    DEV_IMAGE = 'rahul2401/dev:latest'
-    PROD_IMAGE = 'rahul2401/prod:latest'
+    DEV_IMAGE = 'rahulr143/dev:latest'
+    PROD_IMAGE = 'rahulr143/prod:latest'
   }
 
   stages {
